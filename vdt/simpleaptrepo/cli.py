@@ -1,4 +1,5 @@
 import os
+import subprocess
 
 import click
 
@@ -56,7 +57,17 @@ def addcomponent(name, component):
 def updaterepo(name, component):
     """Updates a repo by scanning the debian packages
     and add the index files"""
-    click.echo("do the magic here")
+    config = Config()
+    repo_cfg = config.get_repo(name)
+    path = os.path.join(repo_cfg.get('path'), component)
+    if not os.path.exists(path):
+        raise click.BadParameter("Component '%s' does not exist!" % component)
+    subprocess.check_output("/usr/bin/dpkg-scanpackages -m {path} /dev/null > {path}/Packages".format(path=path), shell=True)
+    subprocess.check_output("cat {path}/Packages | /bin/gzip -9 > {path}/Packages.gz".format(path=path), shell=True)
+    
+#cd /usr/local/share/repos/$1
+#/usr/bin/dpkg-scanpackages -m $2 /dev/null > $2/Packages
+#cat $2/Packages | /bin/gzip -9 > $2/Packages.gz
 
 
 @cli.command()
@@ -65,6 +76,9 @@ def listrepos():
     config = Config()
     for section in config.sections:
         click.echo(section)
+        repo_cfg = config.get_repo(section)
+        for component in os.listdir(repo_cfg.get('path')):
+            click.echo("   %s" % component)
 
 
 def main():
