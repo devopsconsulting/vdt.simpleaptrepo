@@ -62,21 +62,31 @@ def updaterepo(name, component):
     path = os.path.join(repo_cfg.get('path'), component)
     if not os.path.exists(path):
         raise click.BadParameter("Component '%s' does not exist!" % component)
-    subprocess.check_output("/usr/bin/dpkg-scanpackages -m {path} /dev/null > {path}/Packages".format(path=path), shell=True)
-    subprocess.check_output("cat {path}/Packages | /bin/gzip -9 > {path}/Packages.gz".format(path=path), shell=True)
-    
-#cd /usr/local/share/repos/$1
-#/usr/bin/dpkg-scanpackages -m $2 /dev/null > $2/Packages
-#cat $2/Packages | /bin/gzip -9 > $2/Packages.gz
+    if repo_cfg.get('gpgkey'):    
+        subprocess.check_output("/usr/bin/gpg --output %s --armor --export %s" % (os.path.join(path, 'keyfile'), repo_cfg.get('gpgkey')), shell=True)
+        for x in os.listdir(path):
+            if x.endswith('.deb'):  # use glob!
+                deb_file = os.path.join(path, x)
+                click.echo("signed package %s" % x)
+                subprocess.check_output("/usr/bin/dpkg-sig -k %s --sign builder %s" % (repo_cfg.get('gpgkey'), deb_file), shell=True)
 
+    subprocess.check_output("/usr/bin/apt-ftparchive packages . > Packages", shell=True, cwd=path)
+    subprocess.check_output("/bin/gzip -c Packages > Packages.gz", shell=True, cwd=path)
+
+    if repo_cfg.get('gpgkey'):    
+        subprocess.check_output("/usr/bin/apt-ftparchive release . > Release", shell=True, cwd=path)             
+        subprocess.check_output("/usr/bin/gpg -u 0x%s --clearsign -o InRelease Release" % repo_cfg.get('gpgkey'), shell=True, cwd=path)
+        subprocess.check_output("/usr/bin/gpg -u 0x%s -abs -o Release.gpg Release" % repo_cfg.get('gpgkey'), shell=True, cwd=path)             
 
 @cli.command()
 def listrepos():
     """List currently configured repos"""
     config = Config()
-    for section in config.sections:
-        click.echo(section)
+    for section in config.sections:  # tree.walk!!
         repo_cfg = config.get_repo(section)
+        if repo_cfg.get('gpgkey'):
+            section = "%s (gpgkey: %s)" % (section, repo_cfg.get('gpgkey'))
+        click.echo(section)
         for component in os.listdir(repo_cfg.get('path')):
             click.echo("   %s" % component)
 
