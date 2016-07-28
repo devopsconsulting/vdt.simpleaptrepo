@@ -32,8 +32,8 @@ Now create a repository:
 
     simpleapt create-repo myrepo /www/myrepo --gpgkey 10FB8BDC
     
-    Repository 'myrepo' created"
-    Add the key on the host where you want to install the packages
+    Repository 'myrepo' created
+    Now add a component with the 'add-component' command
 
 Create a component:
 -------------------
@@ -52,7 +52,7 @@ You will see what you need to do now:
     
     Add the key on the host where you want to install the packages.
     (This is only needed once per repository)
-    wget -qO - http://<hostname>/myrepo/keyfile | sudo apt-key add -    
+    wget -qO - http://<hostname>/myrepo/keyfile | sudo apt-key add -
 
 Add some more if you like:
 
@@ -68,6 +68,9 @@ See that our repo is there:
        staging
        main
 
+Add packages:
+-------------
+
 Copy some debian package into a component and update the repo:
 
     simpleapt update-repo myrepo test
@@ -75,12 +78,11 @@ Copy some debian package into a component and update the repo:
     Exported key 10FB8BDC to /www/myrepo/test/keyfile
 
     Signed package /www/myrepo/test/my-package_0.0.1_all.deb
-    est/main/vadain-hostedshop_0.0.1-jenkins-776_all.deb
     Creates Packages
     Creates Packages.gz
     Create Release with key 10FB8BDC
     Create InRelease with key 10FB8BDC
-    Create Releases.gpg with key 10FB8BDC    
+    Create Releases.gpg with key 10FB8BDC
 
 Now you can install these packages!
 
