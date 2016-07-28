@@ -8,7 +8,7 @@ from vdt.simpleaptrepo.utils import write_to_stdout
 
 
 def create_gpg_key(output_command):
-    cmd = "gpg --gen-key"
+    cmd = "/usr/bin/gpg --gen-key"
     try:
         output_command(subprocess.check_output(cmd, shell=True))
     except subprocess.CalledProcessError as e:
@@ -26,11 +26,21 @@ def export_pubkey(path, gpgkey, output_command):
 def sign_packages(path, gpgkey, output_command):
     # sign packages
     for deb_file in glob(os.path.join(path, "*.deb")):
-        # TODO: check if package is signed!!
+
+        output = subprocess.check_output(
+            "dpkg-sig --verify %s" % deb_file, shell=True)
+
+        if "_gpgbuilder" in output:
+            output_command("Package %s already signed!" % deb_file)
+            output_command("Removing signature")
+            subprocess.check_output(
+                "ar -d %s _gpgbuilder" % deb_file, shell=True)
+
+        # sign again
         output_command("Signed package %s" % deb_file)
         subprocess.check_output(
-            "/usr/bin/dpkg-sig -k %s --sign builder %s" % (gpgkey, deb_file),
-            shell=True)
+            "/usr/bin/dpkg-sig -k %s --sign builder %s" % (
+                gpgkey, deb_file), shell=True)
 
 
 def create_package_index(path, output_command):
@@ -72,11 +82,13 @@ class SimpleAPTRepo(Config):
 
     def add_component(self, name, component):
         repo_cfg = self.get_repo_config(name)
+
         path = os.path.join(repo_cfg['path'], component)
         if os.path.exists(path):
             raise ValueError("Directory %s already exists!" % path)
-
         os.mkdir(path)
+
+        return path
 
     def get_component_path(self, name, component):
         repo_cfg = self.get_repo_config(name)

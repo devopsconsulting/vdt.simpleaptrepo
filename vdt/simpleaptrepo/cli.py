@@ -1,7 +1,7 @@
 import click
 
 from vdt.simpleaptrepo.repo import create_gpg_key, SimpleAPTRepo
-from vdt.simpleaptrepo.utils import platform_is_debian
+from vdt.simpleaptrepo.utils import platform_is_debian, repo_root
 
 apt_repo = SimpleAPTRepo()
 
@@ -44,13 +44,22 @@ def create_repo(name, path, gpgkey=""):
 def add_component(name, component):
     """Creates a component (ie, 'main', 'production')"""
     try:
-        apt_repo.add_component(name, component)
+        path = apt_repo.add_component(name, component)
     except ValueError as e:
         raise click.BadParameter(e.message)
+        return
+
+    root = repo_root(path)
 
     click.echo("Component '%s' created in repo '%s'" % (component, name))
     click.echo("Now add some unsigned debian packages in the directory")
     click.echo("and run the 'update-repo' command")
+    click.echo("")
+    click.echo(
+        "Configure your webservice to set the www-root to %s " % root)
+    click.echo(
+        "Add http://<hostname>/%s/%s / to your sources.list" % (
+            name, component))
 
 
 @cli.command(name='update-repo')
