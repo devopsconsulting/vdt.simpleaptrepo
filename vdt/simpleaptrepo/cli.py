@@ -60,6 +60,12 @@ def add_component(name, component):
     click.echo(
         "Add http://<hostname>/%s/%s / to your sources.list" % (
             name, component))
+    click.echo("")
+    click.echo(
+        "Add the key on the host where you want to install the packages.")
+    click.echo("(This is only needed once per repository)")
+    click.echo(
+        "wget -qO - http://<hostname>/%s/keyfile | sudo apt-key add -" % name)
 
 
 @cli.command(name='update-repo')
