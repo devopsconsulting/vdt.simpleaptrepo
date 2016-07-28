@@ -1,6 +1,7 @@
 import click
 
 from vdt.simpleaptrepo.repo import SimpleAPTRepo
+from vdt.simpleaptrepo.utils import platform_is_debian
 
 apt_repo = SimpleAPTRepo()
 
@@ -54,7 +55,8 @@ def update_repo(name, component):
     gpgkey = repo_cfg.get('gpgkey', None)
 
     try:
-        apt_repo.update_component(component_path, gpgkey)
+        apt_repo.update_component(
+            component_path, gpgkey, output_command=click.echo)
     except ValueError as e:
         raise click.UsageError(e.message)
 
@@ -70,8 +72,10 @@ def list_repos():
 
 
 def main():
-    cli()
-
+    if platform_is_debian():
+        cli()
+    else:
+        click.echo("You are not on debian or ubuntu, aborting!")
 
 if __name__ == "__main__":
     main()

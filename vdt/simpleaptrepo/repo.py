@@ -2,46 +2,47 @@ from glob import glob
 import os
 import subprocess
 
-
 from vdt.simpleaptrepo.config import Config
 
+from vdt.simpleaptrepo.utils import write_to_stdout
 
-def export_pubkey(path, gpgkey):
+
+def export_pubkey(path, gpgkey, output_command):
     key_path = os.path.join(path, 'keyfile')
     cmd = "/usr/bin/gpg --yes --output %s --armor --export %s" % (
         key_path, gpgkey)
     subprocess.check_output(cmd, shell=True)
-    print "Exported key %s to %s" % (gpgkey, key_path)
+    output_command("Exported key %s to %s" % (gpgkey, key_path))
 
 
-def sign_packages(path, gpgkey):
+def sign_packages(path, gpgkey, output_command):
     # sign packages
     for deb_file in glob(os.path.join(path, "*.deb")):
         # TODO: check if package is signed!!
-        print "Signed package %s" % deb_file
+        output_command("Signed package %s" % deb_file)
         subprocess.check_output(
             "/usr/bin/dpkg-sig -k %s --sign builder %s" % (gpgkey, deb_file),
             shell=True)
 
 
-def create_package_index(path):
-    print "Creates Packages"
+def create_package_index(path, output_command):
+    output_command("Creates Packages")
     subprocess.check_output(
         "/usr/bin/apt-ftparchive packages . > Packages", shell=True, cwd=path)
-    print "Creates Packages.gz"
+    output_command("Creates Packages.gz")
     subprocess.check_output(
         "/bin/gzip -c Packages > Packages.gz", shell=True, cwd=path)
 
 
-def create_signed_releases_index(path, gpgkey):
-    print "Create Release"
+def create_signed_releases_index(path, gpgkey, output_command):
+    output_command("Create Release with key %s" % gpgkey)
     subprocess.check_output(
         "/usr/bin/apt-ftparchive release . > Release", shell=True, cwd=path)
-    print "Create InRelease"
+    output_command("Create InRelease with key %s" % gpgkey)
     subprocess.check_output(
         "/usr/bin/gpg --yes -u 0x%s --clearsign -o InRelease Release" % (
             gpgkey), shell=True, cwd=path)
-    print "Create Reales.gpg"
+    output_command("Create Releases.gpg with key %s" % gpgkey)
     subprocess.check_output(
         "/usr/bin/gpg --yes -u 0x%s -abs -o Release.gpg Release" % (
             gpgkey), shell=True, cwd=path)
@@ -88,13 +89,14 @@ class SimpleAPTRepo(Config):
             result.append(repo)
         return result
 
-    def update_component(self, path, gpgkey=None):
+    def update_component(
+            self, path, gpgkey=None, output_command=write_to_stdout):
         if gpgkey is not None:
             # export keyfile
-            export_pubkey(path, gpgkey)
-            sign_packages(path, gpgkey)
+            export_pubkey(path, gpgkey, output_command)
+            sign_packages(path, gpgkey, output_command)
 
-        create_package_index(path)
+        create_package_index(path, output_command)
 
         if gpgkey is not None:
-            create_signed_releases_index(path, gpgkey)
+            create_signed_releases_index(path, gpgkey, output_command)
