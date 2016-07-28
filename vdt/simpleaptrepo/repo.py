@@ -7,6 +7,14 @@ from vdt.simpleaptrepo.config import Config
 from vdt.simpleaptrepo.utils import write_to_stdout
 
 
+def create_gpg_key(output_command):
+    cmd = "gpg --gen-key"
+    try:
+        output_command(subprocess.check_output(cmd, shell=True))
+    except subprocess.CalledProcessError as e:
+        raise ValueError(e)
+
+
 def export_pubkey(path, gpgkey, output_command):
     key_path = os.path.join(path, 'keyfile')
     cmd = "/usr/bin/gpg --yes --output %s --armor --export %s" % (

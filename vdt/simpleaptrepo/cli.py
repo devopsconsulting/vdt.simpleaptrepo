@@ -1,6 +1,6 @@
 import click
 
-from vdt.simpleaptrepo.repo import SimpleAPTRepo
+from vdt.simpleaptrepo.repo import create_gpg_key, SimpleAPTRepo
 from vdt.simpleaptrepo.utils import platform_is_debian
 
 apt_repo = SimpleAPTRepo()
@@ -9,6 +9,18 @@ apt_repo = SimpleAPTRepo()
 @click.group()
 def cli():
     pass
+
+
+@cli.command(name='create-gpg-key')
+def create_key():
+    """Creates a GPG key"""
+    try:
+        create_gpg_key(output_command=click.echo)
+    except ValueError as e:
+        raise click.UsageError(e.message)
+
+    click.echo("Key created (see above for the hash)")
+    click.echo("Now add a repository with the 'create-repo' command")
 
 
 @cli.command(name='create-repo')
@@ -23,7 +35,7 @@ def create_repo(name, path, gpgkey=""):
         raise click.BadParameter(e.message)
 
     click.echo("Repository '%s' created" % name)
-    click.echo("Now add a component with the 'addcomponent' command")
+    click.echo("Now add a component with the 'add-component' command")
 
 
 @cli.command(name='add-component')
@@ -37,6 +49,8 @@ def add_component(name, component):
         raise click.BadParameter(e.message)
 
     click.echo("Component '%s' created in repo '%s'" % (component, name))
+    click.echo("Now add some unsigned debian packages in the directory")
+    click.echo("and run the 'update-repo' command")
 
 
 @cli.command(name='update-repo')
