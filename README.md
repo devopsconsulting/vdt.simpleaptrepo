@@ -47,7 +47,7 @@ You will see what you need to do now:
     Now add some unsigned debian packages in the directory
     and run the 'update-repo' command
 
-    Configure your webservice to set the www-root to /www/myrepo
+    Configure your webservice to set the www-root to /www
     Add http://<hostname>/myrepo/test / to your sources.list
     
     Add the key on the host where you want to install the packages.
