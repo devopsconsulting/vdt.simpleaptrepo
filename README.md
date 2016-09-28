@@ -30,7 +30,7 @@ So copy the `10FB8BDC` hash, you will need it later.
 
 Now create a repository:
 
-    simpleapt create-repo myrepo /www/myrepo --gpgkey 10FB8BDC
+    simpleapt create-repo myrepo /www/ --gpgkey 10FB8BDC
     
     Repository 'myrepo' created
     Now add a component with the 'add-component' command

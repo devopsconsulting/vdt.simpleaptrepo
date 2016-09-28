@@ -56,7 +56,8 @@ def add_component(name, component):
     click.echo("and run the 'update-repo' command")
     click.echo("")
     click.echo(
-        "Configure your webservice to set the www-root to %s " % root)
+        "After that, configure your webservice "
+        "to set the www-root to %s " % root)
     click.echo(
         "Add http://<hostname>/%s/%s / to your sources.list" % (
             name, component))
@@ -65,7 +66,8 @@ def add_component(name, component):
         "Add the key on the host where you want to install the packages.")
     click.echo("(This is only needed once per repository)")
     click.echo(
-        "wget -qO - http://<hostname>/%s/keyfile | sudo apt-key add -" % name)
+        "wget -qO - http://<hostname>/%s/%s/keyfile | sudo apt-key add -" % (
+            name, component))
 
 
 @cli.command(name='update-repo')
@@ -73,7 +75,7 @@ def add_component(name, component):
 @click.argument('component', default="main")
 def update_repo(name, component):
     """Updates a repo by scanning the debian packages
-        and add the index files
+       and add the index files
     """
     try:
         repo_cfg = apt_repo.get_repo_config(name)
