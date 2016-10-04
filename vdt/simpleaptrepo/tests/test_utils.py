@@ -19,10 +19,6 @@ def mock_check_output_ok():
     return ""
 
 
-def mock_check_output_exception():
-    raise utils.subprocess.CalledProcessError("A exception")
-
-
 class TestUtils(unittest.TestCase):
 
     def test_platform_is_debian(self):
