@@ -1,5 +1,4 @@
 import click
-
 from vdt.simpleaptrepo.repo import create_gpg_key, SimpleAPTRepo
 from vdt.simpleaptrepo.utils import platform_is_debian, repo_root
 

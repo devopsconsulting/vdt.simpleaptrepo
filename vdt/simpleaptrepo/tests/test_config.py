@@ -1,5 +1,4 @@
 import os
-
 import unittest
 
 import vdt.simpleaptrepo.config as config
@@ -16,11 +15,13 @@ class TestConfig(unittest.TestCase):
         os.remove(self.configfile)
 
     def test_create_config_file(self):
+        # this should create a configfile
         config_obj = config.Config()
         config_obj.save_config()
         os.path.isfile(self.configfile)
 
     def test_add_repo_config(self):
+        # adds a repo to the configfile
         config_obj = config.Config()
         config_obj.add_repo_config(name="test", path="/www", gpgkey="123456")
 
@@ -40,20 +41,3 @@ class TestConfig(unittest.TestCase):
 
         # a unkown name should raise an exception
         self.assertRaises(ValueError, config_obj.get_repo_config, "unkown")
-
-
-    # def add_repo_config(self, name, path, gpgkey=""):
-    #     if not self.config.has_section(name):
-    #         self.config.add_section(name)
-
-    #     self.config.set(name, 'path', path)
-
-    #     if gpgkey:
-    #         self.config.set(name, 'gpgkey', gpgkey)
-
-    #     self.save_config()
-
-    # def get_repo_config(self, name):
-    #     if not self.config.has_section(name):
-    #         raise ValueError("'%s' does not exist!" % name)
-    #     return dict(self.config.items(name))
