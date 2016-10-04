@@ -13,6 +13,7 @@ class Config(object):
 
     def save_config(self):
         self.config.write(open(self.path, "w"))
+        self.config.read(self.path)
 
     def add_repo_config(self, name, path, gpgkey=""):
         if not self.config.has_section(name):
