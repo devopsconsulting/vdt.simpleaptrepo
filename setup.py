@@ -9,7 +9,7 @@ setup(
     # extract version from module.
     version=__version__,
     description="A simple command line utility to create a debian repository",
-    long_description=open('README.md').read(),
+    long_description=open('README.rst').read(),
     classifiers=[
         'License :: OSI Approved :: BSD License',
         'Operating System :: Unix',
