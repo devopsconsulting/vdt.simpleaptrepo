@@ -15,10 +15,6 @@ def mock_dist_debian():
     return ('debian', '8.6', '')
 
 
-def mock_check_output_ok():
-    return ""
-
-
 class TestUtils(unittest.TestCase):
 
     def test_platform_is_debian(self):
