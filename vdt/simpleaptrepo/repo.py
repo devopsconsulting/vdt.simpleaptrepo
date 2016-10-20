@@ -26,9 +26,13 @@ def export_pubkey(path, gpgkey, output_command):
 def sign_packages(path, gpgkey, output_command):
     # sign packages
     for deb_file in glob(os.path.join(path, "*.deb")):
-
-        output = subprocess.check_output(
-            "dpkg-sig --verify %s" % deb_file, shell=True)
+        try:
+            output = subprocess.check_output(
+                "dpkg-sig --verify %s" % deb_file, shell=True)
+        except subprocess.CalledProcessError as e:
+            # this is pretty strange, as the command is returning an error code
+            # but still could have run succesful
+            output = e.output
 
         if "_gpgbuilder" in output:
             output_command("Package %s already signed!" % deb_file)
