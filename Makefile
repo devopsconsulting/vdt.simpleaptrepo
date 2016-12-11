@@ -1,10 +1,10 @@
 TESTRUNNER = $(shell which nosetests)
+nosetest:
+	nosetests -s --with-coverage --cover-erase --cover-package=vdt.simpleaptrepo --cover-xml --logging-level=INFO --with-doctest --verbosity=2
 
 install:
 	python setup.py develop
 	pip install -e .[test] 
 
-test: install
-	coverage run $(TESTRUNNER) -s --logging-level=INFO --with-doctest
-	coverage report -m --include=vdt/simpleaptrepo/*
-	coverage xml --include=vdt/simpleaptrepo/* -o coverage.xml
+test: install nosetest
+	
