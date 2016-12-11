@@ -42,6 +42,6 @@ setup(
     },
     # mark test target to require extras.
     extras_require={
-        'test': ['nose', 'coverage'],
+        'test': ['nose', 'coverage', 'mock'],
     },
 )
