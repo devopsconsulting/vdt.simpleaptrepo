@@ -46,7 +46,6 @@ def add_component(name, component):
         path = apt_repo.add_component(name, component)
     except ValueError as e:
         raise click.BadParameter(e.message)
-        return
 
     root = repo_root(path)
 
