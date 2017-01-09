@@ -72,7 +72,7 @@ def add_component(name, component):
 @click.argument('name')
 @click.argument('component', default="main")
 def update_repo(name, component):
-    """Updates a repo by scanning the debian packages
+    """Updates a repo's component by scanning the debian packages
        and add the index files
     """
     try:
