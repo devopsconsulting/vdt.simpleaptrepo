@@ -1,5 +1,4 @@
 import os
-import shutil
 import unittest
 
 
@@ -8,7 +7,6 @@ from click.testing import CliRunner
 import mock
 
 from vdt.simpleaptrepo import cli
-from vdt.simpleaptrepo.config import HOME
 
 
 GPG_KEY_OUTPUT = """GPG OUTPUT
@@ -28,7 +26,12 @@ Now add a component with the 'add-component' command
 
 class TestCLI(unittest.TestCase):
 
-    config_file = os.path.join(HOME, ".simpleapt.ini")
+    def setUp(self):
+        # patch the aptrepo instance to write the file to the current
+        # directory, re-read the sections
+        cli.apt_repo.path = os.path.join(os.getcwd(), ".simpleapt.ini")
+        cli.apt_repo.config.read(cli.apt_repo.path)
+        cli.apt_repo.sections = cli.apt_repo.config.sections()
 
     @mock.patch('subprocess.check_output', return_value="GPG OUTPUT")
     def test_create_gpg_key(self, mock_subprocess):
@@ -56,34 +59,35 @@ class TestCLI(unittest.TestCase):
 
     def test_create_repo_and_component(self):
         runner = CliRunner()
-        result = runner.invoke(
-            cli.create_repo, ["my_repo", "--gpgkey", "123456"])
 
-        # command should be run without error
-        self.assertEqual(result.exit_code, 0)
+        with runner.isolated_filesystem():
+            result = runner.invoke(
+                cli.create_repo, ["my_repo", "--gpgkey", "123456"])
 
-        # click's output should be captured correctly
-        self.assertEqual(result.output, CREATE_REPO_OUTPUT)
+            # command should be run without error
+            self.assertEqual(result.exit_code, 0)
 
-        # a directory with 'my_repo' should be here
-        self.assertTrue(os.path.exists("my_repo"))
+            # click's output should be captured correctly
+            self.assertEqual(result.output, CREATE_REPO_OUTPUT)
 
-        # a configuration file in my home directory should be there
-        self.assertTrue(self.config_file)
+            # a directory with 'my_repo' should be here
+            self.assertTrue(os.path.exists("my_repo"))
 
-        # now create a component
-        result = runner.invoke(
-            cli.add_component, ["my_repo", "main"])
+            # a configuration file in my home directory should be there
+            self.assertTrue(os.path.exists(cli.apt_repo.path))
 
-        # command should be run without error
-        self.assertEqual(result.exit_code, 0)
+            # now create a component
+            result = runner.invoke(
+                cli.add_component, ["my_repo", "main"])
 
-        # click's output should be captured correctly
-        self.assertTrue(
-            "Add http://<hostname>/my_repo/main / to your sources.list" in result.output)  # noqa
+            # command should be run without error
+            self.assertEqual(result.exit_code, 0)
+
+            # click's output should be captured correctly
+            self.assertTrue(
+                "Add http://<hostname>/my_repo/main / to your sources.list" in result.output)  # noqa
 
     def tearDown(self):
-        if os.path.exists("my_repo"):
-            shutil.rmtree("my_repo")
-        if os.path.exists(self.config_file):
-            os.remove(self.config_file)
+        # remove the config file when it exists
+        if os.path.exists(cli.apt_repo.path):
+            os.remove(cli.apt_repo.path)
