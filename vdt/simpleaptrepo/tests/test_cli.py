@@ -1,10 +1,15 @@
+import os
+import shutil
 import unittest
+
 
 from click.testing import CliRunner
 
 import mock
 
 from vdt.simpleaptrepo import cli
+from vdt.simpleaptrepo.config import HOME
+
 
 GPG_KEY_OUTPUT = """GPG OUTPUT
 Key created (see above for the hash)
@@ -16,8 +21,14 @@ GPG_KEY_ERROR = """Usage: create-gpg-key [OPTIONS]
 Error: GPG ERROR
 """
 
+CREATE_REPO_OUTPUT = """Repository 'my_repo' created
+Now add a component with the 'add-component' command
+"""
+
 
 class TestCLI(unittest.TestCase):
+
+    config_file = os.path.join(HOME, ".simpleapt.ini")
 
     @mock.patch('subprocess.check_output', return_value="GPG OUTPUT")
     def test_create_gpg_key(self, mock_subprocess):
@@ -42,3 +53,37 @@ class TestCLI(unittest.TestCase):
         self.assertTrue(mock_subprocess.called)
         # click's output should be captured correctly
         self.assertEqual(result.output, GPG_KEY_ERROR)
+
+    def test_create_repo_and_component(self):
+        runner = CliRunner()
+        result = runner.invoke(
+            cli.create_repo, ["my_repo", "--gpgkey", "123456"])
+
+        # command should be run without error
+        self.assertEqual(result.exit_code, 0)
+
+        # click's output should be captured correctly
+        self.assertEqual(result.output, CREATE_REPO_OUTPUT)
+
+        # a directory with 'my_repo' should be here
+        self.assertTrue(os.path.exists("my_repo"))
+
+        # a configuration file in my home directory should be there
+        self.assertTrue(self.config_file)
+
+        # now create a component
+        result = runner.invoke(
+            cli.add_component, ["my_repo", "main"])
+
+        # command should be run without error
+        self.assertEqual(result.exit_code, 0)
+
+        # click's output should be captured correctly
+        self.assertTrue(
+            "Add http://<hostname>/my_repo/main / to your sources.list" in result.output)  # noqa
+
+    def tearDown(self):
+        if os.path.exists("my_repo"):
+            shutil.rmtree("my_repo")
+        if os.path.exists(self.config_file):
+            os.remove(self.config_file)
