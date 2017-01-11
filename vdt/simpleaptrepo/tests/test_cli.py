@@ -1,4 +1,6 @@
+import ConfigParser
 import os
+import shutil
 import unittest
 
 from click.testing import CliRunner
@@ -27,6 +29,10 @@ CREATE_REPO_NO_PARAMS_OUTPUT = """Usage: create-repo [OPTIONS] NAME [PATH]
 Error: Missing argument "name".
 """
 
+LIST_REPOS_OUTPUT = """my_repo (gpgkey: 123456)
+   main
+"""
+
 
 class TestCLI(unittest.TestCase):
 
@@ -41,7 +47,14 @@ class TestCLI(unittest.TestCase):
         # remove the config file when it exists, and clear the sections
         if os.path.exists(cli.apt_repo.path):
             os.remove(cli.apt_repo.path)
-        cli.apt_repo.sections = []
+
+        # remove repo artifacts
+        my_repo = os.path.join(os.getcwd(), "my_repo")
+
+        if os.path.exists(my_repo):
+            shutil.rmtree(my_repo)
+
+        cli.apt_repo.config = ConfigParser.ConfigParser()
 
     @mock.patch('subprocess.check_output', return_value="GPG OUTPUT")
     def test_create_gpg_key(self, mock_subprocess):
@@ -125,9 +138,19 @@ class TestCLI(unittest.TestCase):
 
     def test_list_repos(self):
         runner = CliRunner()
+        runner.echo_stdin = True
 
         # create a repo and a component
-        runner.invoke(cli.create_repo, ["my_repo", "--gpgkey", "123456"])
-        runner.invoke(cli.add_component, ["my_repo", "main"])
+        result = runner.invoke(
+            cli.create_repo, ["my_repo", "--gpgkey", "123456"])
+        self.assertEqual(result.exit_code, 0)
+        result = runner.invoke(cli.add_component, ["my_repo", "main"])
+        self.assertEqual(result.exit_code, 0)
 
+        # make sure list_repos is showing the correct output
         result = runner.invoke(cli.list_repos)
+        self.assertEqual(result.exit_code, 0)
+        self.assertEqual(result.output, LIST_REPOS_OUTPUT)
+
+        # remove the repo
+        shutil.rmtree(os.path.join(os.getcwd(), "my_repo"))
