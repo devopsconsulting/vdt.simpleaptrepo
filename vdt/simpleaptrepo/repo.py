@@ -110,7 +110,7 @@ class SimpleAPTRepo(Config):
 
     def list_repos(self):
         result = []
-        for section in self.sections:
+        for section in self.config.sections():
             repo = {}
             repo_cfg = self.get_repo_config(section)
             if repo_cfg.get('gpgkey'):

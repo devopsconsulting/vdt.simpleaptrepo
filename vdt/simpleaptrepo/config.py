@@ -9,7 +9,6 @@ class Config(object):
         self.config = ConfigParser.ConfigParser()
         self.path = os.path.join(HOME, ".simpleapt.ini")
         self.config.read(self.path)
-        self.sections = self.config.sections()
 
     def save_config(self):
         self.config.write(open(self.path, "w"))
