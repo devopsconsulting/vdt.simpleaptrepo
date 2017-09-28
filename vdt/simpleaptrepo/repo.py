@@ -37,8 +37,15 @@ def sign_packages(path, gpgkey, output_command):
         if "_gpgbuilder" in output:
             output_command("Package %s already signed!" % deb_file)
             output_command("Removing signature")
+
             subprocess.check_output(
                 "ar -d %s _gpgbuilder" % deb_file, shell=True)
+
+            # we should match the gpgbuilder output with a regex, but for now
+            # we do this for a quickfix. The output can be _gpgbuilder or
+            # _gpgbuilder0, probably _gpgbuilder1 etc too
+            subprocess.check_output(
+                "ar -d %s _gpgbuilder0" % deb_file, shell=True)
 
         # sign again
         output_command("Signed package %s" % deb_file)
