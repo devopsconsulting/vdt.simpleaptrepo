@@ -113,6 +113,22 @@ Copy some debian package into a component's directory and update the repo:
     Create InRelease with key 10FB8BDC
     Create Releases.gpg with key 10FB8BDC
 
+When there a a lot packages you can skip resigning packages by using the ``--skip-signed`` option:
+
+.. code-block:: bash
+
+    simpleapt update-repo myrepo test --skip-signed
+
+    Exported key 10FB8BDC to /www/myrepo/test/keyfile
+
+    Skipped signing /www/myrepo/test/my-package_0.0.1_all.deb
+
+    Creates Packages
+    Creates Packages.gz
+    Create Release with key 10FB8BDC
+    Create InRelease with key 10FB8BDC
+    Create Releases.gpg with key 10FB8BDC
+
 Now you can install these packages!
 
 

@@ -35,13 +35,12 @@ def sign_packages(path, gpgkey, skip_signed, output_command):
             output = e.output
 
         if "_gpgbuilder" in output:
-            output_command("Package %s already signed!" % deb_file)
 
             if skip_signed:
-                output_command("We enabled the --skip-signed option, ")
-                output_command("So we skip the signing")
+                output_command("Skipped signing %s" % deb_file)
                 continue
 
+            output_command("Package %s already signed!" % deb_file)
             output_command("Removing signature")
 
             subprocess.check_output(
