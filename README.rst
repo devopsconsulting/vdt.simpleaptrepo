@@ -4,6 +4,9 @@ vdt.simpleaptrepo
 
 Simple command line tool to create apt repositories. This will work on debian and ubuntu.
 
+.. image:: https://api.travis-ci.org/devopsconsulting/vdt.simpleaptrepo.svg?branch=master
+    :target: https://travis-ci.org/devopsconsulting/vdt.simpleaptrepo
+
 Installation:
 =============
 
