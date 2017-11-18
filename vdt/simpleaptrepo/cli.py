@@ -83,11 +83,8 @@ def update_repo(name, component):
 
     gpgkey = repo_cfg.get('gpgkey', None)
 
-    try:
-        apt_repo.update_component(
-            component_path, gpgkey, output_command=click.echo)
-    except ValueError as e:
-        raise click.UsageError(e.message)
+    apt_repo.update_component(
+        component_path, gpgkey, output_command=click.echo)
 
 
 @cli.command('list-repos')
