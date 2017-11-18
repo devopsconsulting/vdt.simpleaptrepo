@@ -71,9 +71,10 @@ def add_component(name, component):
 @cli.command(name='update-repo')
 @click.argument('name')
 @click.argument('component', default="main")
-def update_repo(name, component):
+@click.option('--skip-signed', help='Skip already signed packaged')
+def update_repo(name, component, skip_signed=False):
     """Updates a repo's component by scanning the debian packages
-       and add the index files
+       and add the index files.
     """
     try:
         repo_cfg = apt_repo.get_repo_config(name)
@@ -84,7 +85,7 @@ def update_repo(name, component):
     gpgkey = repo_cfg.get('gpgkey', None)
 
     apt_repo.update_component(
-        component_path, gpgkey, output_command=click.echo)
+        component_path, gpgkey, skip_signed, output_command=click.echo)
 
 
 @cli.command('list-repos')

@@ -23,7 +23,7 @@ def export_pubkey(path, gpgkey, output_command):
     output_command("Exported key %s to %s" % (gpgkey, key_path))
 
 
-def sign_packages(path, gpgkey, output_command):
+def sign_packages(path, gpgkey, skip_signed, output_command):
     # sign packages
     for deb_file in glob(os.path.join(path, "*.deb")):
         try:
@@ -36,6 +36,12 @@ def sign_packages(path, gpgkey, output_command):
 
         if "_gpgbuilder" in output:
             output_command("Package %s already signed!" % deb_file)
+
+            if skip_signed:
+                output_command("We enabled the --skip-signed option, ")
+                output_command("So we skip the signing")
+                continue
+
             output_command("Removing signature")
 
             subprocess.check_output(
@@ -121,11 +127,12 @@ class SimpleAPTRepo(Config):
         return result
 
     def update_component(
-            self, path, gpgkey=None, output_command=write_to_stdout):
+            self, path, gpgkey=None, skip_signed=False,
+            output_command=write_to_stdout):
         if gpgkey is not None:
             # export keyfile
             export_pubkey(path, gpgkey, output_command)
-            sign_packages(path, gpgkey, output_command)
+            sign_packages(path, gpgkey, skip_signed, output_command)
 
         create_package_index(path, output_command)
 
