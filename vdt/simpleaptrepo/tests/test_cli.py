@@ -1,4 +1,8 @@
-import ConfigParser
+try:
+    import ConfigParser  # python 2
+except:
+    import configparser as ConfigParser  # python 3
+
 import os
 import shutil
 import unittest
