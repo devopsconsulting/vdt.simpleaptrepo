@@ -9,3 +9,4 @@ install:
 
 script:
   - make test
+  - cd docker && docker-compose up
