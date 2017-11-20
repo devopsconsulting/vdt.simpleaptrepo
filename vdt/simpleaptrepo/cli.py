@@ -71,7 +71,8 @@ def add_component(name, component):
 @cli.command(name='update-repo')
 @click.argument('name')
 @click.argument('component', default="main")
-@click.option('--skip-signed', help='Skip already signed packaged')
+@click.option(
+    '--skip-signed', is_flag=True, help='Skip already signed packaged')
 def update_repo(name, component, skip_signed=False):
     """Updates a repo's component by scanning the debian packages
        and add the index files.
