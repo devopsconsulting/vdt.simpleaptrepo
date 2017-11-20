@@ -1,4 +1,3 @@
-include *.md
-recursive-include vdt *.*
-recursive-exclude tests *.*
-recursive-exclude docker *.*
+include *.rst
+prune vdt/simpleaptrepo/tests
+prune docker
