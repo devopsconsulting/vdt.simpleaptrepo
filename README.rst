@@ -140,6 +140,7 @@ Changelog:
 0.0.4 (2017-11-20):
 -----------
 - Added a ``--skip-signed`` option so we can skip already signed debian packages
+- Added python 3 support
 
 
 Useful URLS:
