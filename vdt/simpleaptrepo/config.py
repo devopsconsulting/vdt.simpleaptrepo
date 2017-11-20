@@ -1,4 +1,8 @@
-import ConfigParser
+try:
+    import ConfigParser  # python 2
+except:
+    import configparser as ConfigParser  # python 3
+
 import os
 
 HOME = os.path.expanduser("~")
@@ -9,10 +13,10 @@ class Config(object):
         self.config = ConfigParser.ConfigParser()
         self.path = os.path.join(HOME, ".simpleapt.ini")
         self.config.read(self.path)
-        self.sections = self.config.sections()
 
     def save_config(self):
         self.config.write(open(self.path, "w"))
+        self.config.read(self.path)
 
     def add_repo_config(self, name, path, gpgkey=""):
         if not self.config.has_section(name):

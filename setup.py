@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-__version__ = "0.0.3"
+__version__ = "0.0.4"
 
 
 setup(
@@ -16,6 +16,10 @@ setup(
         'Programming Language :: Python',
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
+
     ],
     keywords='',
     author='Martijn Jacobs',
@@ -42,6 +46,6 @@ setup(
     },
     # mark test target to require extras.
     extras_require={
-        'test': ['nose', 'coverage'],
+        'dev': ['nose', 'coverage', 'mock', 'twine'],
     },
 )

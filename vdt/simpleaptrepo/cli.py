@@ -1,5 +1,4 @@
 import click
-
 from vdt.simpleaptrepo.repo import create_gpg_key, SimpleAPTRepo
 from vdt.simpleaptrepo.utils import platform_is_debian, repo_root
 
@@ -17,7 +16,7 @@ def create_key():
     try:
         create_gpg_key(output_command=click.echo)
     except ValueError as e:
-        raise click.UsageError(e.message)
+        raise click.UsageError(str(e))
 
     click.echo("Key created (see above for the hash)")
     click.echo("Now add a repository with the 'create-repo' command")
@@ -32,7 +31,7 @@ def create_repo(name, path, gpgkey=""):
     try:
         apt_repo.add_repo(name, path, gpgkey)
     except ValueError as e:
-        raise click.BadParameter(e.message)
+        raise click.BadParameter(str(e))
 
     click.echo("Repository '%s' created" % name)
     click.echo("Now add a component with the 'add-component' command")
@@ -46,8 +45,7 @@ def add_component(name, component):
     try:
         path = apt_repo.add_component(name, component)
     except ValueError as e:
-        raise click.BadParameter(e.message)
-        return
+        raise click.BadParameter(str(e))
 
     root = repo_root(path)
 
@@ -73,23 +71,22 @@ def add_component(name, component):
 @cli.command(name='update-repo')
 @click.argument('name')
 @click.argument('component', default="main")
-def update_repo(name, component):
-    """Updates a repo by scanning the debian packages
-       and add the index files
+@click.option(
+    '--skip-signed', is_flag=True, help='Skip already signed packaged')
+def update_repo(name, component, skip_signed=False):
+    """Updates a repo's component by scanning the debian packages
+       and add the index files.
     """
     try:
         repo_cfg = apt_repo.get_repo_config(name)
         component_path = apt_repo.get_component_path(name, component)
     except ValueError as e:
-        raise click.BadParameter(e.message)
+        raise click.BadParameter(str(e))
 
     gpgkey = repo_cfg.get('gpgkey', None)
 
-    try:
-        apt_repo.update_component(
-            component_path, gpgkey, output_command=click.echo)
-    except ValueError as e:
-        raise click.UsageError(e.message)
+    apt_repo.update_component(
+        component_path, gpgkey, skip_signed, output_command=click.echo)
 
 
 @cli.command('list-repos')
