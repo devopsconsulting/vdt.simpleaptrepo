@@ -10,47 +10,34 @@ Simple command line tool to create apt repositories. This will work on debian an
 Installation:
 =============
 
-First install from pypi:
-
-.. code-block:: bash
+First install from pypi::
 
     pip install vdt.simpleaptrepo
-    
-This tool is a wrapper for some debian specific packages, so you will need to install them first:
 
-.. code-block:: bash
+This tool is a wrapper for some debian specific packages, so you will need to install them first::
 
     apt-get install gnupg dpkg-sig apt-utils
 
+To show which commands are available::
 
-To show which commands are available:
- 
-.. code-block:: bash
- 
     simpleapt --help
 
 Create a repository:
 ====================
-First you need to create a gpg key to sign your packages with. This is not mandatory but highly recommended.
-
-.. code-block:: bash
+First you need to create a gpg key to sign your packages with. This is not mandatory but highly recommended::
 
     simpleapt create-gpg-key
-    
-Copy and remember the key's hash. The output looks something like this:
 
-.. code-block:: bash
+Copy and remember the key's hash. The output looks something like this::
 
     gpg: key 10FB8BDC marked as ultimately trusted
-    
+
 So copy the `10FB8BDC` hash, you will need it later.
 
-Now create a repository:
-
-.. code-block:: bash
+Now create a repository::
 
     simpleapt create-repo myrepo /www/ --gpgkey 10FB8BDC
-    
+
     Repository 'myrepo' created
     Now add a component with the 'add-component' command
 
@@ -58,15 +45,11 @@ Now create a repository:
 Create a component:
 ===================
 
-In one repository you have multiple components:
-
-.. code-block:: bash
+In one repository you have multiple components::
 
     simpleapt add-component myrepo test
 
-You will see what you need to do now:
-
-.. code-block:: bash
+You will see what you need to do now::
 
     Component 'test' created in repo 'myrepo'
 
@@ -80,16 +63,12 @@ You will see what you need to do now:
     (This is only needed once per repository)
     wget -qO - http://<hostname>/myrepo/test/keyfile | sudo apt-key add -
 
-Add some more if you like:
-
-.. code-block:: bash
+Add some more if you like::
 
     simpleapt add-component myrepo staging
     simpleapt add-component myrepo production
 
-See that our repo is there:
-
-.. code-block:: bash
+See that our repo is there::
 
     simpleapt list-repos
     
@@ -98,12 +77,11 @@ See that our repo is there:
        staging
        main
 
+
 Add packages:
 =============
 
-Copy some debian package into a component's directory and update the repo:
-
-.. code-block:: bash
+Copy some debian package into a component's directory and update the repo::
 
     simpleapt update-repo myrepo test
 
@@ -116,9 +94,7 @@ Copy some debian package into a component's directory and update the repo:
     Create InRelease with key 10FB8BDC
     Create Releases.gpg with key 10FB8BDC
 
-When there a a lot packages you can skip resigning packages by using the ``--skip-signed`` option:
-
-.. code-block:: bash
+When there a a lot packages you can skip resigning packages by using the ``--skip-signed`` option::
 
     simpleapt update-repo myrepo test --skip-signed
 
@@ -132,13 +108,15 @@ When there a a lot packages you can skip resigning packages by using the ``--ski
     Create InRelease with key 10FB8BDC
     Create Releases.gpg with key 10FB8BDC
 
+
 Now you can install these packages!
+
 
 Changelog:
 ==========
 
 0.0.4 (2017-11-20):
------------
+-------------------
 - Added a ``--skip-signed`` option so we can skip already signed debian packages
 - Added python 3 support
 
