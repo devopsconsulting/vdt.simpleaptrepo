@@ -134,6 +134,13 @@ When there a a lot packages you can skip resigning packages by using the ``--ski
 
 Now you can install these packages!
 
+Changelog:
+==========
+
+0.0.4 (2017-11-20):
+-----------
+- Added a ``--skip-signed`` option so we can skip already signed debian packages
+
 
 Useful URLS:
 ============
