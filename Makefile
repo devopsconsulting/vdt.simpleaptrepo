@@ -1,4 +1,9 @@
 TESTRUNNER = $(shell which nosetests)
+clean:
+	find . -name '*.pyc' -delete
+	find . -name '__pycache__' -delete
+	find . -name '*.egg-info' -delete
+	
 nosetest:
 	nosetests -s --with-coverage --cover-erase --cover-package=vdt.simpleaptrepo --cover-xml --logging-level=INFO --with-doctest --verbosity=2
 
