@@ -3,10 +3,14 @@ python:
   - "2.7"
   - "3.5"
   - "3.6"
+  - "3.7"
+
+services:
+  - docker
   
 install:
   - make install
 
 script:
   - make test
-  - cd docker && docker-compose up
+  - docker-compose -f docker/docker-compose.yml up
