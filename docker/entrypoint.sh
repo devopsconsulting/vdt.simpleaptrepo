@@ -1,5 +1,6 @@
 #!/bin/bash
 # runs the unittests
+pip install pip --upgrade
 make test
 # do some cleanup
 if [ -d "/repos/" ]; then
