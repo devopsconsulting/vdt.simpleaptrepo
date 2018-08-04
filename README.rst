@@ -114,6 +114,9 @@ Now you can install these packages!
 
 Changelog:
 ==========
+0.0.5 (2018-08-04):
+-------------------
+- Checked for python 3.7 support
 
 0.0.4 (2017-11-20):
 -------------------
