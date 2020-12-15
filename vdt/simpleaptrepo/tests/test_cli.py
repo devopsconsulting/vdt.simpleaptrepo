@@ -29,8 +29,9 @@ Now add a component with the 'add-component' command
 """
 
 CREATE_REPO_NO_PARAMS_OUTPUT = """Usage: create-repo [OPTIONS] NAME [PATH]
+Try 'create-repo --help' for help.
 
-Error: Missing argument "name".
+Error: Missing argument 'NAME'.
 """
 
 LIST_REPOS_OUTPUT = """my_repo (gpgkey: 123456)
