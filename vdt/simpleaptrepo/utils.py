@@ -21,7 +21,7 @@ def repo_root(path):
 
 
 def write_to_stdout(message):
-    unbuffered_output = os.fdopen(sys.stdout.fileno(), 'w', 0)
+    unbuffered_output = os.fdopen(sys.stdout.fileno(), "w", 0)
     unbuffered_output.write("%s\n" % message)
 
 
