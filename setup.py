@@ -24,7 +24,7 @@ setup(
     author='Martijn Jacobs',
     author_email='maerteijn@gmail.com',
     url='https://github.com/devopsconsulting/vdt.simpleaptrepo',
-    license='BSD',
+    license='MIT',
     # include all packages in the egg, except the test package.
     packages=find_packages(
         exclude=['ez_setup', 'examples', '*tests']),
