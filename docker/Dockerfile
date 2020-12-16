@@ -1,4 +1,4 @@
-FROM debian:9
+FROM debian:10
 MAINTAINER Martijn Jacobs <maerteijn@gmail.com>
 
 ENV DEBIAN_FRONTEND noninteractive

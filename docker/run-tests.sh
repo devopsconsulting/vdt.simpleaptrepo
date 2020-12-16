@@ -14,8 +14,8 @@ fi
 
 mkdir /repos
 
-# # now we really create a repo here and add a package
-# # the gpg key is build into the docker image for testing purposes
+# now we really create a repo here and add a package
+# the gpg key is build into the docker image for testing purposes
 simpleapt create-repo myrepo /repos --gpgkey AC46C6AAD5792E7E
 simpleapt add-component myrepo test
 simpleapt list-repos

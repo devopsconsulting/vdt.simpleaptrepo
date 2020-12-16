@@ -13,4 +13,4 @@ docker commit simpleapt-test-image-generate-key maerteijn/simpeapt-test-image
 
 echo "Done!"
 echo "Now push the image with 'docker push maerteijn/simpeapt-test-image'"
-echo  "and delete the container afterwards: 'docker rm simpleapt-test-image-generate-key'"
+echo "and delete the container afterwards: 'docker rm simpleapt-test-image-generate-key'"
