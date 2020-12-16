@@ -12,7 +12,7 @@ def create_gpg_key(output_command):
     try:
         output_command(subprocess.check_output(cmd, shell=True))
     except subprocess.CalledProcessError as e:
-        raise ValueError(e)
+        raise ValueError from e
 
 
 def export_pubkey(path, gpgkey, output_command):

@@ -1,7 +1,4 @@
-try:
-    import ConfigParser  # python 2
-except:
-    import configparser as ConfigParser  # python 3
+import configparser as ConfigParser
 
 import os
 import shutil
@@ -181,7 +178,7 @@ class TestCLI(unittest.TestCase):
             self.assertEqual(result.output, LIST_REPOS_OUTPUT)
 
     @mock.patch("subprocess.check_output", return_value="Mocked output")
-    def test_update_repo(self, mock_subprocess=None):
+    def test_update_repo(self, mock_subprocess=None):  # pylint: disable=W0613
         runner = CliRunner()
 
         with runner.isolated_filesystem():
