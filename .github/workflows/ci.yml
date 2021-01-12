@@ -1,0 +1,16 @@
+name: vdt.simpleaptrepo ci
+on: [push]
+jobs:
+  run-ci-steps:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout the repository
+      uses: actions/checkout@v2
+    - name: Setup Python 3.6
+      uses: actions/setup-python@v2
+      with:
+         python-version: '3.6'
+    - name: Install all dependencies
+      run: make install
+    - name: Run all linting
+      run: make lint
