@@ -46,7 +46,8 @@ setup(
     },
     # mark test target to require extras.
     extras_require={
-        'dev': ['nose', 'coverage', 'mock', 'twine', 'black', 'pylint'],
+        'dev': ['nose', 'coverage', 'mock', 'twine'],
+        'lint': ['black', 'pylint'],
     },
     python_requires='>=3.5',
 )

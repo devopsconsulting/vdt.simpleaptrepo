@@ -29,6 +29,6 @@ jobs:
         with:
            python-version: ${{ matrix.python-version }}
       - name: Install all dependencies
-        run: make install
+        run: make install-dev
       - name: Run the unittests
         run: make test
